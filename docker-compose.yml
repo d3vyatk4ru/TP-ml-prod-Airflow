@@ -93,27 +93,52 @@ services:
       - ml_base
     restart: "no"
 
-#  predict:
-#    build:
-#      context: images/airflow-predict
-#    image: airflow-predict
-#    restart: "no"
-#
-#  download:
-#    build:
-#      context: images/airflow-download
-#    image: airflow-download
-#    restart: "no"
-#
-#
-#  preprocess:
-#    build:
-#      context: images/airflow-preprocess
-#    image: airflow-preprocess
-#    restart: "no"#
+  preprocess_files:
+    build:
+      context: images/airflow-preprocess-files
+    image: airflow-preprocess-files
+    depends_on:
+      - ml_base
+    restart: "no"
 
+  train:
+    build:
+      context: images/airflow-train
+    image: airflow-train
+    depends_on:
+      - ml_base
+    restart: "no"
 
+  preprocessing:
+    build:
+      context: images/airflow-preprocessing
+    image: airflow-preprocessing
+    depends_on:
+      - ml_base
+    restart: "no"
+
+  split:
+    build:
+      context: images/airflow-split
+    image: airflow-split
+    depends_on:
+      - ml_base
+    restart: "no"
+
+  validation:
+    build:
+      context: images/airflow-validation
+    image: airflow-validation
+    depends_on:
+      - ml_base
+    restart: "no"
+
+  predict:
+    build:
+      context: images/airflow-predict
+    image: airflow-predict
+    depends_on:
+      - ml_base
+    restart: "no"
 volumes:
   logs:
-
-
