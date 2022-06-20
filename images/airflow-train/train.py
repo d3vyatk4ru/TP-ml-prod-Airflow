@@ -10,27 +10,30 @@ from sklearn.linear_model import LogisticRegression
 @click.command("train")
 @click.option("--load_data_path")
 @click.option("--save_model_path")
-def train_model(train_path: str, model_path: str) -> NoReturn:
+def train_model(load_data_path: str, save_model_path: str) -> NoReturn:
     """ Train model """
 
-    model = LogisticRegression(
-        random_state=42,
-        max_iter=1000,
+    data = pd.read_csv(
+        os.path.join(load_data_path, 'train.csv'),
     )
 
-    dataframe = pd.read_csv(os.path.join(train_path, 'train.csv'), index_col=0)
-    y_train = dataframe.target.values
-    X_train = dataframe.drop(['target'], axis=1).values
-    model.fit(X_train, y_train)
+    y_train = data.target.values
+    X_train = data.drop(['target'], axis=1).values
 
-    save_object_pkl(model, model_path)
+    logreg = LogisticRegression(
+        random_state=42,
+        max_iter=1000,
+    ).fit(X_train, y_train)
+
+    os.makedirs(save_model_path, exist_ok=True)
+
+    save_object_pkl(logreg, os.path.join(save_model_path, 'model.pkl'))
 
 def save_object_pkl(obj, path: str) -> NoReturn:
     """ Save pickle object """
 
-    os.makedirs(path, exist_ok=True)
-    with open(os.path.join(path, 'model.pkl'), 'wb', encoding='utf-8') as handler:
-        pickle.dump(obj, handler)
+    with open(path, 'wb') as file:
+        pickle.dump(obj, file)
 
 
 if __name__ == "__main__":

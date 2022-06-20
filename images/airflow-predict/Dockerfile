@@ -1,4 +1,4 @@
-FROM airflow-ml-base:latest
+FROM base-img:latest
 
 COPY predict.py /predict.py
 
