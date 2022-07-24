@@ -1,6 +1,7 @@
 from datetime import timedelta
 from airflow import DAG
 from airflow.providers.docker.operators.docker import DockerOperator
+from airflow.contrib.sensors.file_sensor import FileSensor
 from airflow.utils.dates import days_ago
 from docker.types import Mount
 
@@ -81,19 +82,19 @@ with DAG(
                 '--save_model_path /data/models/{{ ds }}',
     )
 
-    # check_transformer = FileSensor(
-    #     task_id='Check_transformer_exist',
-    #     retries=2,
-    #     filepath='data/models/{{ ds }}/transformer.pkl',
-    #     poke_interval=10,
-    # )
+    check_transformer = FileSensor(
+        task_id='Check_transformer_exist',
+        retries=2,
+        filepath='data/models/{{ ds }}/transformer.pkl',
+        poke_interval=10,
+    )
 
-    # check_model = FileSensor(
-    #     task_id='check_model_exist',
-    #     retries=2,
-    #     filepath='data/models/{{ ds }}/model.pkl',
-    #     poke_interval=10,
-    # )
+    check_model = FileSensor(
+        task_id='check_model_exist',
+        retries=2,
+        filepath='data/models/{{ ds }}/model.pkl',
+        poke_interval=10,
+    )
 
     validation = DockerOperator(
         task_id='Validate_model',
